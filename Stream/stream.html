@@ -1,20 +1,52 @@
-<h1>Dashboard</h1>
-<p>Welcome {{user.name}}</p>
 
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>StreamCapture Stream View</title>
+        <script>
+            if (location.href.indexOf('file:') == 0) {
+                document.write('<h1 style="color:red;">Please load this HTML file on HTTP or HTTPS.</h1>');
+            }
+        </script>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <link rel="stylesheet" href="https://bootswatch.com/flatly/bootstrap.min.css">
+    </head>
+    <body>
+        <style>
+            video{
+                display: none;
+            }
+
+            #files-list{
+                margin: 0 auto;
+                padding: 0;
+                list-style-type: none;
+                width:80%;
+                //border:1px solid black;
+            }
+
+            #files-list li{
+                display: inline-block;
+                font-size:16px;
+                width: 24%;
+                margin-left: 1%;
+            }
+        </style>
         
             <video></video> 
         
-        
-       
-            
-       
 
         <div>
-            <button id="btn-start-recording">Start Recording</button>
-            <button id="btn-stop-recording" disabled="">Stop Recording</button>
+            <!--<button id="btn-start-recording">Start Recording</button>
+            <button id="btn-stop-recording" disabled="">Stop Recording</button>-->
+            <h2 id="footer-h2"></h2>
+            <button onClick="window.location.reload()">Restart Stream</button>
+            <ul id="files-list"></ul>
         </div>
 
-        <!--<script src="../node_modules/recordrtc/RecordRTC.js"> </script>-->
+        <script src="/node_modules/recordrtc/RecordRTC.js"> </script>
         
         <script>
             // fetching DOM references
@@ -23,10 +55,15 @@
             
             var videoElement = document.querySelector('video');
             
-            var progressBar = document.querySelector('#progress-bar');
-            var percentage = document.querySelector('#percentage');
+            
             
             var recorder;
+
+            function getFormattedDate(){
+                        var d = new Date();
+                        d = d.getFullYear() + "-" + ('0' + (d.getMonth() + 1)).slice(-2) + "-" + ('0' + d.getDate()).slice(-2) + " " + ('0' + d.getHours()).slice(-2) + ":" + ('0' + d.getMinutes()).slice(-2) + ":" + ('0' + d.getSeconds()).slice(-2);
+                        return d;
+                    }
 
             // reusable helpers
             
@@ -50,7 +87,7 @@
                     console.info('fileURL', fileURL);
                     videoElement.src = fileURL;
                     //videoElement.play();
-                    /*captureUserMedia(function(stream) {
+                    captureUserMedia(function(stream) {
                     mediaStream = stream;
                     
                     videoElement.src = window.URL.createObjectURL(stream);
@@ -65,16 +102,27 @@
                     recorder.startRecording();
                     
                     // enable stop-recording button
-                    btnStopRecording.disabled = false;
-                });*/
+                    //btnStopRecording.disabled = false;
+                });
+
+                
+
 
                 setInterval(function(){
                     recorder.stopRecording(postFiles);
-                },10000);
-                    videoElement.muted = false;
-                    videoElement.controls = true;
-
-                    document.querySelector('#footer-h2').innerHTML = '<a href="' + videoElement.src + '">' + videoElement.src + '</a>';
+                    
+                },15000);
+                    //videoElement.muted = false;
+                    //videoElement.controls = true;
+                    var node = document.createElement("LI");
+                    //var node2 = document.createElement("P");
+                    node.innerHTML = '<p>' + getFormattedDate() + '</p>' + '<br>' + '<a>' + '<a target="_blank" href="' + videoElement.src + '">' + 'Zobacz' + '</a>'
+                    + '<br>' + '<a>' + '<a href="' + videoElement.src + '" download>' + 'Pobierz' + '</a>';
+                    
+                    document.getElementById("files-list").appendChild(node);
+                    
+                    //document.querySelector('#footer-h2').innerHTML = '<a href="' + videoElement.src + '">' + videoElement.src + '</a>';
+                    console.log(getFormattedDate());
                 });
                 
                 if(mediaStream) mediaStream.stop();
@@ -133,7 +181,7 @@
             }
 
             // UI events handling
-            btnStartRecording.onclick = function() {
+            /*btnStartRecording.onclick = function() {
                 btnStartRecording.disabled = true;
                 
                 captureUserMedia(function(stream) {
@@ -153,16 +201,16 @@
                     // enable stop-recording button
                     btnStopRecording.disabled = false;
                 });
-            };
+            };*/
 
             window.onload = function() {
-                btnStartRecording.disabled = true;
+                //btnStartRecording.disabled = true;
                 
                 captureUserMedia(function(stream) {
                     mediaStream = stream;
                     
                     videoElement.src = window.URL.createObjectURL(stream);
-                    //videoElement.play();
+                    videoElement.play();
                     videoElement.muted = true;
                     videoElement.controls = false;
                     
@@ -173,24 +221,29 @@
                     recorder.startRecording();
                     
                     // enable stop-recording button
-                    btnStopRecording.disabled = false;
+                    //btnStopRecording.disabled = false;
+                    
                     setTimeout(function(){
                         recorder.stopRecording(postFiles);
-                    }, 10000);
+                        
+                    },15000);
                     
                 });
             };
 
             
 
-            btnStopRecording.onclick = function() {
+            /*btnStopRecording.onclick = function() {
                 btnStartRecording.disabled = false;
                 btnStopRecording.disabled = true;
                 
                 recorder.stopRecording(postFiles);
-            };
+            };*/
 
             window.onbeforeunload = function() {
                 startRecording.disabled = false;
             };
         </script>
+        
+    </body>
+</html>
