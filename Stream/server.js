@@ -42,12 +42,6 @@ function serverHandler(request, response) {
             filename += '\\index.html';
         }
 
-        if (fs.statSync(filename).isDirectory() && !isWin) {
-            filename += '/stream.html';
-        } else if (fs.statSync(filename).isDirectory() && !!isWin) {
-            filename += '\\stream.html';
-        }
-
         fs.readFile(filename, 'binary', function(err, file) {
             if (err) {
                 response.writeHead(500, {

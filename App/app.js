@@ -1,4 +1,3 @@
-"use strict";
 const express = require('express');
 const server = require('http');
 const url = require('url');
