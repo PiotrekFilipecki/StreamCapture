@@ -1,1 +1,1 @@
-Kod źródłowy dla projektu inżynierskiego
+Kod źródłowy dla projektu inżynierskiego.
